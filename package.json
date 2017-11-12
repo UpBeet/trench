@@ -1,0 +1,23 @@
+{
+  "name": "trench",
+  "version": "0.1.0",
+  "description": "yes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UpBeet/trench.git"
+  },
+  "keywords": [
+    "trench",
+    "game"
+  ],
+  "author": "petroochio thatbraxguy",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UpBeet/trench/issues"
+  },
+  "homepage": "https://github.com/UpBeet/trench#readme"
+}
