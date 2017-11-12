@@ -3,26 +3,19 @@ import { section } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 
 import { aScene, aEntity, aSky } from './utils/AframeHyperscript';
+import generateLevel from './level/generator';
 
 const sky = aSky({ attrs: { color: '#f5f5f5' } });
-const sphere = aEntity(
-    {
-      attrs: {
-        geometry: 'primitive: sphere; radius: 0.05; segmentsWidth: 10; segmentsHeight: 10;',
-        material: 'flatShading: true; color: "#000000"',
-        position: '0 1.5 -1',
-      },
-    }
-  );
+const level = generateLevel(0, 100);
 
 function Trench(sources) {
     const { DOM, storage } = sources;
     const vdom$ = xs.of(
         section(
-            '#game', [aScene([sky, sphere])]
+            '#game', [aScene([sky, ...level])]
         )
     );
-    
+
     const sinks = {
         DOM: vdom$,
     };
@@ -30,3 +23,10 @@ function Trench(sources) {
 }
 
 export default Trench;
+
+// level
+
+// time,  -> levelObjects
+// level
+
+//
