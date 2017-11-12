@@ -4,6 +4,9 @@
   "description": "yes",
   "main": "index.js",
   "scripts": {
+    "build": "webpack",
+    "lint": "eslint ./src",
+    "build:watch": "webpack --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,5 +22,40 @@
   "bugs": {
     "url": "https://github.com/UpBeet/trench/issues"
   },
-  "homepage": "https://github.com/UpBeet/trench#readme"
+  "babel": {
+    "presets": [
+      [
+        "env",
+        {
+          "targets": {
+            "browsers": [
+              "Firefox > 50"
+            ]
+          }
+        }
+      ]
+    ]
+  },
+  "homepage": "https://github.com/UpBeet/trench#readme",
+  "dependencies": {
+    "@cycle/collection": "^0.6.0",
+    "@cycle/dom": "^20.1.0",
+    "@cycle/isolate": "^3.2.0",
+    "@cycle/run": "^4.0.0",
+    "aframe": "^0.7.1",
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "ramda": "^0.25.0",
+    "three": "^0.88.0",
+    "webpack": "^3.8.1",
+    "xstream": "^11.0.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.2",
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
 }
