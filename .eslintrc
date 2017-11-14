@@ -4,11 +4,12 @@
     ],
     "parser": "babel-eslint",
     "rules": {
+      "function-paren-newline": ["error", "multiline"],
       "no-unused-vars": 1,
       "comma-dangle": ["error", {
           "arrays": "always-multiline",
           "objects": "always-multiline",
-          "functions": "ignore",
+          "functions": "ignore"
       }]
     },
     "env": {
