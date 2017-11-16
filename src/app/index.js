@@ -5,6 +5,8 @@ import isolate from '@cycle/isolate';
 import { aScene, aEntity, aSky } from './utils/AframeHyperscript';
 import generateLevel from './level/generator';
 import Camera from './Camera';
+import PlayerController from './PlayerController';
+import PlayerObject from './PlayerObject';
 
 const sky = aSky({ attrs: { color: '#f5f5f5' } });
 const level = generateLevel(0, 100); // This ain't no cycle component, we should make it one
@@ -15,17 +17,21 @@ function view(children$) {
     .map(c =>
       section(
         '#game',
-        [aScene([sky, c, ...level])]
+        [aScene([sky, ...c, ...level])]
       ));
 }
 
 function Trench(sources) {
   const { DOM } = sources;
   const camera = Camera();
-  const vdom$ = view(camera.DOM);
+  const pController = PlayerController(sources);
+  const player = PlayerObject(sources);
+
+  const children$ = xs.combine(camera.DOM, player.DOM);
+  const vdom$ = view(children$);
 
   const sinks = {
-    DOM: vdom$,
+    DOM: xs.combine(vdom$, pController.move$).map(([x, _]) => x), // vdom$,
   };
   return sinks;
 }
