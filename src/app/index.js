@@ -25,7 +25,7 @@ function Trench(sources) {
   const { DOM } = sources;
   const camera = Camera();
   const pController = PlayerController(sources);
-  const player = PlayerObject(sources);
+  const player = PlayerObject({ DOM, prop$: pController.move$ });
 
   const children$ = xs.combine(camera.DOM, player.DOM);
   const vdom$ = view(children$);
