@@ -11,6 +11,12 @@ import PlayerObject from './PlayerObject';
 const sky = aSky({ attrs: { color: '#f5f5f5' } });
 const level = generateLevel(0, 100); // This ain't no cycle component, we should make it one
 
+function intent(sources) {
+  return {
+    frame$: sources.Time.animationFrames(),
+  };
+}
+
 function view(children$) {
   // Children stream should emit an array of children, but it don't now
   return children$
@@ -23,9 +29,11 @@ function view(children$) {
 
 function Trench(sources) {
   const { DOM } = sources;
+  const { frame$ } = intent(sources);
+
   const camera = Camera();
   const pController = PlayerController(sources);
-  const player = PlayerObject({ DOM, prop$: pController.move$ });
+  const player = PlayerObject({ DOM, frame$, move$: pController.move$ });
 
   const children$ = xs.combine(camera.DOM, player.DOM);
   const vdom$ = view(children$);
