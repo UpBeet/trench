@@ -1,15 +1,24 @@
 import * as R from 'ramda';
+import * as THREE from 'three';
 import xs from 'xstream';
+import sampleCombine from 'xstream/extra/sampleCombine';
 
 import { aEntity } from './utils/AframeHyperscript';
 
-const SPEED = 0.000001;
+const SPEED = 0.00003;
 
-function calcMovement([prevX, prevY], [target, delta]) {
+// This needs to actually scale the vector here, but whatever :/
+function calcMovement([prevX, prevY], [delta, target]) {
+  // This is me trying to avoid if statements
   const deltaX = SPEED * delta * (prevX > target[0] ? -1 : 1);
   const deltaY = SPEED * delta * (prevY > target[1] ? -1 : 1);
 
-  return [prevX + deltaX, prevY + deltaY];
+  const xDiff = prevX - target[0];
+  const yDiff = prevY - target[1];
+  const newX = (xDiff < 0.001 && xDiff > -0.001) ? prevX : prevX + deltaX;
+  const newY = (yDiff < 0.001 && yDiff > -0.001) ? prevY : prevY + deltaY;
+
+  return [newX, newY];
 }
 
 function intent(sources) {
@@ -27,7 +36,9 @@ function model(intents) {
     .map(R.map(v => Math.floor(v * 100) / 1000))
     .map(([x, y]) => [x, -y]);
 
-  const state$ = xs.combine(scaledTarget$, frame$).fold(calcMovement, [0, 0]);
+  const state$ = frame$
+    .compose(sampleCombine(scaledTarget$))
+    .fold(calcMovement, [0, 0]);
 
   return state$;
 }
@@ -52,6 +63,7 @@ function Player(sources) {
 
   const sinks = {
     DOM: vdom$,
+    state$,
   };
   return sinks;
 }
