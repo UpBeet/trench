@@ -4,7 +4,7 @@ import { section } from '@cycle/dom';
 import isolate from '@cycle/isolate';
 import Collection from '@cycle/collection';
 
-import { aScene, aEntity, aSky } from './utils/AframeHyperscript';
+import { aScene, aSky } from './utils/AframeHyperscript';
 import generateLevel from './level/generator';
 import Camera from './Camera';
 import PlayerController from './PlayerController';
@@ -38,8 +38,9 @@ function Trench(sources) {
   const pController = PlayerController({ DOM, Time, frame$ });
   const player = PlayerObject({ DOM, frame$, move$: pController.move$ });
 
+  // Bullet collection stuff
   const bulletProps = { startPos$: player.state$.take(1), frame$ };
-  const pBullets$ = Collection(PlayerBullet, bulletProps, pController.shoot$, R.prop('remove$'));
+  const pBullets$ = Collection(isolate(PlayerBullet), bulletProps, pController.shoot$, R.prop('remove$'));
   const bulletVdom$ = Collection.pluck(pBullets$, R.prop('DOM'));
 
   const children$ = xs.combine(camera.DOM, player.DOM, bulletVdom$).map(R.flatten);

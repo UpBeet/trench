@@ -1,24 +1,25 @@
 import * as R from 'ramda';
-import * as THREE from 'three';
+import { Vector2 } from 'three';
 import xs from 'xstream';
 import sampleCombine from 'xstream/extra/sampleCombine';
 
 import { aEntity } from './utils/AframeHyperscript';
 
-const SPEED = 0.00003;
+const SPEED = 0.003;
+const MOVE_DIST_MIN = 0.01;
 
 // This needs to actually scale the vector here, but whatever :/
 function calcMovement([prevX, prevY], [delta, target]) {
-  // This is me trying to avoid if statements
-  const deltaX = SPEED * delta * (prevX > target[0] ? -1 : 1);
-  const deltaY = SPEED * delta * (prevY > target[1] ? -1 : 1);
+  const prevVec = new Vector2(prevX, prevY);
+  const motionVec = new Vector2(...target);
+  const distance = motionVec.distanceTo(prevVec);
+  const distanceScale = R.clamp(0.01, 1, distance);
 
-  const xDiff = prevX - target[0];
-  const yDiff = prevY - target[1];
-  const newX = (xDiff < 0.001 && xDiff > -0.001) ? prevX : prevX + deltaX;
-  const newY = (yDiff < 0.001 && yDiff > -0.001) ? prevY : prevY + deltaY;
+  motionVec.sub(prevVec);
+  motionVec.normalize();
+  motionVec.multiplyScalar(SPEED * delta * distanceScale);
 
-  return [newX, newY];
+  return distance > MOVE_DIST_MIN ? [prevX + motionVec.x, prevY + motionVec.y] : [prevX, prevY];
 }
 
 function intent(sources) {

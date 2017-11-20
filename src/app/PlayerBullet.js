@@ -1,8 +1,12 @@
 import * as R from 'ramda';
 import xs from 'xstream';
-import sampleCombine from 'xstream/extra/sampleCombine';
 
 import { aEntity } from './utils/AframeHyperscript';
+
+// Random Constants of the class
+const SPEED = 0.02;
+const START_Z = -0.1;
+const END_Z = -2.0;
 
 function renderBullet([x, y, z]) {
   const attrs = {
@@ -16,9 +20,9 @@ function renderBullet([x, y, z]) {
 
 function model(intents) {
   const { startPos$, frame$ } = intents;
-  const zPos$ = frame$.fold(z => z - 0.01, -0.1);
+  const zPos$ = frame$.fold(z => z - SPEED, START_Z);
   const pos$ = xs.combine(startPos$, zPos$).map(R.flatten);
-  const remove$ = zPos$.filter(R.gte(-2.0));
+  const remove$ = zPos$.filter(R.gte(END_Z));
 
   return {
     pos$,
