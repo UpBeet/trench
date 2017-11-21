@@ -123,7 +123,9 @@ function pushDomEvents(type, element) {
 }
 
 function model(actions, element) {
-  const { mouseDown$, mouseMove$, mouseUp$, mouseOut$ } = actions;
+  const {
+    mouseDown$, mouseMove$, mouseUp$, mouseOut$,
+  } = actions;
 
   mouseDown$.compose(pushDomEvents('mousedown', element));
   // TODO Needs to be altered to get delta?
@@ -132,7 +134,8 @@ function model(actions, element) {
   mouseOut$.compose(pushDomEvents('mouseout', element));
 }
 
-AFRAME.registerComponent('mouse-events',
+AFRAME.registerComponent(
+  'mouse-events',
   {
     schema: {},
     init() {

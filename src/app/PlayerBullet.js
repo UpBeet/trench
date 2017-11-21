@@ -13,6 +13,7 @@ function renderBullet([x, y, z]) {
     geometry: 'primitive: sphere; radius: 0.01; segmentsWidth: 10; segmentsHeight: 10;',
     material: 'flatShading: true; color: red',
     position: `${x} ${y} ${z}`,
+    'sphere-collision': 'targetType: enemy; radius: 0.01',
   };
 
   return aEntity('.bullet', { attrs });

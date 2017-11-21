@@ -10,6 +10,7 @@ import Camera from './Camera';
 import PlayerController from './PlayerController';
 import PlayerObject from './PlayerObject';
 import PlayerBullet from './PlayerBullet';
+import EnemyObject from './EnemyObject';
 
 const sky = aSky({ attrs: { color: '#f5f5f5' } });
 const level = generateLevel(0, 100); // This ain't no cycle component, we should make it one
@@ -43,7 +44,10 @@ function Trench(sources) {
   const pBullets$ = Collection(isolate(PlayerBullet), bulletProps, pController.shoot$, R.prop('remove$'));
   const bulletVdom$ = Collection.pluck(pBullets$, R.prop('DOM'));
 
-  const children$ = xs.combine(camera.DOM, player.DOM, bulletVdom$).map(R.flatten);
+  // Temp enemy to test collision
+  const enemy = EnemyObject({});
+
+  const children$ = xs.combine(enemy.DOM, camera.DOM, player.DOM, bulletVdom$).map(R.flatten);
   const vdom$ = view(children$);
 
   const sinks = {
