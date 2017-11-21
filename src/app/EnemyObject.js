@@ -4,25 +4,34 @@ import xs from 'xstream';
 import { aEntity } from './utils/AframeHyperscript';
 
 function intent(sources) {
-  return {};
+  const { DOM } = sources;
+  const collide$ = DOM.select('.enemy').events('collide');
+
+  return {
+    collide$,
+  };
 }
 
 function model(actions) {
-  const state$ = xs.of([0, 0, -1]);
+  const { collide$ } = actions;
+
+  const position$ = xs.of([0, 0, -0.7]);
   const remove$ = xs.empty();
+  const color$ = xs.merge(xs.of('green'), collide$.mapTo('blue'));
 
   return {
-    state$,
+    position$,
+    color$,
     remove$,
   };
 }
 
 function view(state$) {
   return state$
-    .map(([x, y, z]) => {
+    .map(([[x, y, z], color]) => {
       const attrs = {
         geometry: 'primitive: sphere; radius: 0.01; segmentsWidth: 10; segmentsHeight: 10;',
-        material: 'flatShading: true; color: green',
+        material: `flatShading: true; color: ${color}`,
         position: `${x} ${y} ${z}`,
         'sphere-collision-target': 'targetType: enemy; radius: 0.01',
       };
@@ -33,8 +42,8 @@ function view(state$) {
 
 function EnemyObject(sources) {
   const actions = intent(sources);
-  const { state$, remove$ } = model(actions);
-  const vdom$ = view(state$);
+  const { position$, color$, remove$ } = model(actions);
+  const vdom$ = view(xs.combine(position$, color$));
 
   const sinks = {
     DOM: vdom$,

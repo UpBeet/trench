@@ -40,12 +40,12 @@ function Trench(sources) {
   const player = PlayerObject({ DOM, frame$, move$: pController.move$ });
 
   // Bullet collection stuff
-  const bulletProps = { startPos$: player.state$.take(1), frame$ };
-  const pBullets$ = Collection(isolate(PlayerBullet), bulletProps, pController.shoot$, R.prop('remove$'));
+  const bulletSources = { DOM, startPos$: player.state$.take(1), frame$ };
+  const pBullets$ = Collection(isolate(PlayerBullet), bulletSources, pController.shoot$, R.prop('remove$'));
   const bulletVdom$ = Collection.pluck(pBullets$, R.prop('DOM'));
 
   // Temp enemy to test collision
-  const enemy = EnemyObject({});
+  const enemy = isolate(EnemyObject)({ DOM });
 
   const children$ = xs.combine(enemy.DOM, camera.DOM, player.DOM, bulletVdom$).map(R.flatten);
   const vdom$ = view(children$);

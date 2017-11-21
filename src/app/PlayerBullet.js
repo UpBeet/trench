@@ -19,11 +19,22 @@ function renderBullet([x, y, z]) {
   return aEntity('.bullet', { attrs });
 }
 
+function intent(sources) {
+  const { DOM, startPos$, frame$ } = sources;
+  const collide$ = DOM.select('.bullet').events('collide');
+
+  return {
+    startPos$,
+    frame$,
+    collide$,
+  };
+}
+
 function model(intents) {
-  const { startPos$, frame$ } = intents;
+  const { startPos$, frame$, collide$ } = intents;
   const zPos$ = frame$.fold(z => z - SPEED, START_Z);
   const pos$ = xs.combine(startPos$, zPos$).map(R.flatten);
-  const remove$ = zPos$.filter(R.gte(END_Z));
+  const remove$ = xs.merge(zPos$.filter(R.gte(END_Z)), collide$);
 
   return {
     pos$,
@@ -32,7 +43,8 @@ function model(intents) {
 }
 
 function PlayerBullet(sources) {
-  const state = model(sources);
+  const actions = intent(sources);
+  const state = model(actions);
   const vdom$ = state.pos$.map(renderBullet);
 
   return {
