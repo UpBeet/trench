@@ -7,9 +7,11 @@ import Collection from '@cycle/collection';
 import { aScene, aSky } from './utils/AframeHyperscript';
 import generateLevel from './level/generator';
 import Camera from './Camera';
+
 import PlayerController from './PlayerController';
 import PlayerObject from './PlayerObject';
 import PlayerBullet from './PlayerBullet';
+
 import EnemyObject from './EnemyObject';
 
 const sky = aSky({ attrs: { color: '#f5f5f5' } });
@@ -44,10 +46,13 @@ function Trench(sources) {
   const pBullets$ = Collection(isolate(PlayerBullet), bulletSources, pController.shoot$, R.prop('remove$'));
   const bulletVdom$ = Collection.pluck(pBullets$, R.prop('DOM'));
 
-  // Temp enemy to test collision
-  const enemy = isolate(EnemyObject)({ DOM });
+  // Enemy Collection stuff
+  // some bs start pos
+  const enemySources = { DOM, startPos$: xs.of([0, 0]), frame$ };
+  const enemy$ = Collection(isolate(EnemyObject), enemySources, xs.from([1, 2, 3]), R.prop('remove$'));
+  const enemyVdom$ = Collection.pluck(enemy$, R.prop('DOM'));
 
-  const children$ = xs.combine(enemy.DOM, camera.DOM, player.DOM, bulletVdom$).map(R.flatten);
+  const children$ = xs.combine(camera.DOM, player.DOM, enemyVdom$, bulletVdom$).map(R.flatten);
   const vdom$ = view(children$);
 
   const sinks = {
@@ -57,9 +62,3 @@ function Trench(sources) {
 }
 
 export default Trench;
-
-// dafuq is this shit?
-// level
-
-// time,  -> levelObjects
-// level

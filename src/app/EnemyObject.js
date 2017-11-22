@@ -4,19 +4,23 @@ import xs from 'xstream';
 import { aEntity } from './utils/AframeHyperscript';
 
 function intent(sources) {
-  const { DOM } = sources;
+  const { DOM, startPos$ } = sources;
   const collide$ = DOM.select('.enemy').events('collide');
 
   return {
     collide$,
+    startPos$,
   };
 }
 
 function model(actions) {
-  const { collide$ } = actions;
+  const { collide$, startPos$ } = actions;
 
-  const position$ = xs.of([0, 0, -0.7]);
-  const remove$ = xs.empty();
+  // temp rando position bs until we figure out how to move em
+  const x = 0.025 - (0.05 * Math.random());
+  const y = 0.025 - (0.05 * Math.random());
+  const position$ = startPos$.map(() => [x, y, -0.5]);
+  const remove$ = collide$;
   const color$ = xs.merge(xs.of('green'), collide$.mapTo('blue'));
 
   return {
