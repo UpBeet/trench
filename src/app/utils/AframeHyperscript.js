@@ -18,3 +18,4 @@ export const aEntity = createTagHelper('a-entity');
 export const aScene = createTagHelper('a-scene');
 export const aSky = createTagHelper('a-sky');
 export const aSphere = createTagHelper('a-sphere');
+export const aAnimation = createTagHelper('a-animation');
