@@ -18,7 +18,16 @@ function intent(sources) {
 function model(actions) {
   const { collide$, startPos$, endAnimation$ } = actions;
 
-  // temp rando position bs until we figure out how to move em
+  /**
+   * temp rando position bs until we figure out how to move em
+   * Position should be based on how many are left in the array total
+   * Does each enemy need to know it's index? Could have the z based on the index,
+   * or I could have them randomly distributed within a range and each time one is removed
+   * everything moves a little closer to the player, This could be done exclusively in an
+   * enemy manager
+   *
+   * I vote for enemy manager
+   */
   const x = 0.025 - (0.05 * Math.random());
   const y = 0.025 - (0.05 * Math.random());
   const position$ = startPos$.map(() => [x, y, -0.5]);
@@ -34,8 +43,9 @@ function model(actions) {
   };
 }
 
-function view(state$) {
-  return state$
+function view(state) {
+  const { position$, isDead$ } = state;
+  return xs.combine(position$, isDead$)
     .map(([[x, y, z], isDead]) => {
       const shapeAttrs = {
         geometry: 'primitive: sphere; radius: 0.01; segmentsWidth: 10; segmentsHeight: 10;',
@@ -60,12 +70,12 @@ function view(state$) {
 
 function EnemyObject(sources) {
   const actions = intent(sources);
-  const { position$, remove$, isDead$ } = model(actions);
-  const vdom$ = view(xs.combine(position$, isDead$));
+  const state = model(actions);
+  const vdom$ = view(state);
 
   const sinks = {
     DOM: vdom$,
-    remove$,
+    remove$: state.remove$,
   };
   return sinks;
 }

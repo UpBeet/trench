@@ -27,11 +27,19 @@ function Trench(sources) {
 
 export default Trench;
 
-// Create a new game manager every round? <- I don't like this so we will need a reset state
-// If I did, we would need to contain all the important state stuff, in a stream in index
-// Potential state$ stuff: Num Rounds/Score
-// Should there be a separate component for each screen? Start, Level Won, Game, Lose?
-// Do I set a cap on lvls? for github prototype yes
-//
-// To reset game I need to:
-// - Reset player position, Reset enemies, Reset level Progress, Reset timer
+/**
+ * Create a new game manager every round? <- I don't like this so we will need a reset state
+ * If I did, we would need to contain all the important state stuff, in a stream in index
+ * Potential state$ stuff: Num Rounds/Score
+ * Should there be a separate component for each screen? Start, Level Won, Game, Lose?
+ * Do I set a cap on lvls? for github prototype yes
+ *
+ * To reset game I need to:
+ * - Reset player position, Reset enemies, Reset level Progress, Reset timer
+ * - I need a way to pass reset trigger to components, and to manager
+ * - Still need a way to track score
+ *
+ * How do I determine which screen is shown?
+ * I could have one stream that picks one based on the state, and has all DOMs ready
+ * ~~~ Should make sure that there is no wasted event stuff going on in the game manager
+ */
