@@ -38,7 +38,7 @@ function model(sources, actions) {
   const bulletVdom$ = Collection.pluck(pBullets$, R.prop('DOM'));
 
   // Enemy Collection stuff
-  // some bs start pos
+  // some bs start pos which isn't at all used yet
   const enemySources = { DOM, startPos$: xs.of([0, 0]), frame$ };
   const enemy$ = Collection(isolate(EnemyObject), enemySources, xs.from([1, 2, 3]), R.prop('remove$'));
   const enemyVdom$ = Collection.pluck(enemy$, R.prop('DOM'));
