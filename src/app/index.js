@@ -42,4 +42,6 @@ export default Trench;
  * How do I determine which screen is shown?
  * I could have one stream that picks one based on the state, and has all DOMs ready
  * ~~~ Should make sure that there is no wasted event stuff going on in the game manager
+ *
+ * I Really need to find a structure for all the files
  */

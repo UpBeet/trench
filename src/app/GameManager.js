@@ -30,7 +30,7 @@ function model(sources, actions) {
   const camera = Camera();
   const pController = PlayerController({ DOM, Time, frame$ });
   const player = PlayerObject({ DOM, frame$, move$: pController.move$ });
-  const level = LevelGenerator({ DOM, frame$, playerState$: player.state$ });
+  const level = LevelGenerator({ DOM, frame$ });
 
   // Bullet collection stuff
   const bulletSources = { DOM, startPos$: player.state$.take(1), frame$ };
