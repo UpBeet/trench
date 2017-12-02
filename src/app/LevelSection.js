@@ -1,10 +1,11 @@
-import { join, multiply } from 'ramda';
+import { add, multiply, prop, sum } from 'ramda';
 import xs from 'xstream';
 
 import { aEntity } from './utils/AframeHyperscript';
 
 const SECTION_LENGTH = 6;
 const SECTION_WIDTH = 30;
+const SPEED = 0.1;
 
 const randColor = () => `#${Math.random().toString(16).substr(-6)}`;
 
@@ -18,9 +19,24 @@ function wallPiece(w, h, position, color) {
   return aEntity('.wall-piece', { attrs });
 }
 
+function intent(sources) {
+  const { position$, frame$ } = sources;
+
+  return {
+    delta$: frame$.map(prop('delta')),
+    position$,
+  };
+}
+
 function model(actions) {
-  const position$ = actions.position$
-    .map(multiply(-SECTION_LENGTH))
+  const deltaPos$ = actions.delta$
+    .map(multiply(SPEED))
+    .fold(add, 0);
+  const scaledPos$ = actions.position$
+    .map(multiply(-SECTION_LENGTH));
+
+  const position$ = xs.combine(deltaPos$, scaledPos$)
+    .map(sum)
     .map(x => `0 1.5 ${x}`);
 
   return {
@@ -41,7 +57,8 @@ function view(state) {
 
 // int, int => Entity
 function Section(sources) {
-  const state = model(sources);
+  const actions = intent(sources);
+  const state = model(actions);
   const vdom$ = view(state);
 
   return {
