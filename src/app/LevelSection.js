@@ -3,7 +3,7 @@ import xs from 'xstream';
 
 import { aEntity } from './utils/AframeHyperscript';
 
-const SECTION_LENGTH = 6;
+const SECTION_LENGTH = 24;
 const SECTION_WIDTH = 30;
 const SPEED = 0.1;
 
@@ -20,23 +20,33 @@ function wallPiece(w, h, position, color) {
 }
 
 function intent(sources) {
-  const { position$, frame$ } = sources;
+  const { position$, frame$, maxLength$ } = sources;
 
   return {
     delta$: frame$.map(prop('delta')),
     position$,
+    maxLength$,
   };
+}
+
+// Comment here you fool
+function calcPos(prev, [delta, start, max]) {
+  if (prev === false) {
+    return start + delta;
+  }
+
+  return prev < 1 ? prev + delta : (max * -SECTION_LENGTH) + (prev + delta);
 }
 
 function model(actions) {
   const deltaPos$ = actions.delta$
-    .map(multiply(SPEED))
-    .fold(add, 0);
+    .map(multiply(SPEED));
+
   const scaledPos$ = actions.position$
     .map(multiply(-SECTION_LENGTH));
 
-  const position$ = xs.combine(deltaPos$, scaledPos$)
-    .map(sum)
+  const position$ = xs.combine(deltaPos$, scaledPos$, actions.maxLength$)
+    .fold(calcPos, false)
     .map(x => `0 1.5 ${x}`);
 
   return {

@@ -11,8 +11,8 @@ function view(state) {
 }
 
 function LevelGenerator(sources) {
-  const addSection$ = xs.from(range(0, 100))
-    .map(p => ({ position$: xs.of(p) }));
+  const addSection$ = xs.from(range(0, 30))
+    .map(p => ({ position$: xs.of(p), maxLength$: xs.of(30) }));
 
   const section$ = Collection(isolate(Section), sources, addSection$, prop('remove$'));
   const sectionDom$ = Collection.pluck(section$, prop('DOM'));
