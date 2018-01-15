@@ -1,18 +1,22 @@
 import AFRAME from 'aframe';
-import { Vector3 } from 'three';
+import { Vector3, Vector2 } from 'three';
 import * as R from 'ramda';
+
+// Game devs pool things bc we worry about memory
+const sourceVec = new Vector3();
+const targetVec = new Vector3();
 
 // Could do a filter then do the for each to send and event to each collided element
 // Could you help me clean this up brax?
 function checkAndEmitCollisions(el, target) {
   const source = el.components;
-  const sourceVec = new Vector3(
+  sourceVec.set(
     source.position.data.x,
     source.position.data.y,
     source.position.data.z
   );
 
-  const targetVec = new Vector3(
+  targetVec.set(
     target.position.data.x,
     target.position.data.y,
     target.position.data.z
